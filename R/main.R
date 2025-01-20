@@ -75,6 +75,120 @@ bills <- function(search_text = NULL, state_codes = NULL, session_id = NULL) {
   return(bills)
 }
 
+#' Get detailed information about a specific bill
+#'
+#' This function retrieves detailed information about a bill by its ID.
+#'
+#' @param bill_id The unique identifier of the bill
+#' @return A tibble containing detailed bill information
+#'
+#' @examples
+#' bill_details(12345)
+#'
+#' @export
+bill_details <- function(bill_id) {
+  bill <- billtrack_req(glue::glue("bills/{bill_id}")) |>
+    purrr::pluck("bill") |>
+    tibble::as_tibble()
+
+  return(bill)
+}
+
+#' Get sponsors of a specific bill
+#'
+#' This function retrieves all sponsors for a specific bill.
+#'
+#' @param bill_id The unique identifier of the bill
+#' @return A tibble containing sponsor information
+#'
+#' @examples
+#' bill_sponsors(12345)
+#'
+#' @export
+bill_sponsors <- function(bill_id) {
+  sponsors <- billtrack_req(glue::glue("bills/{bill_id}/sponsors")) |>
+    purrr::pluck("sponsors") |>
+    tibble::as_tibble()
+
+  return(sponsors)
+}
+
+#' Get votes for a specific bill
+#'
+#' This function retrieves all votes for a specific bill.
+#'
+#' @param bill_id The unique identifier of the bill
+#' @return A tibble containing voting information
+#'
+#' @examples
+#' bill_votes(12345)
+#'
+#' @export
+bill_votes <- function(bill_id) {
+  votes <- billtrack_req(glue::glue("bills/{bill_id}/votes")) |>
+    purrr::pluck("votes") |>
+    tibble::as_tibble()
+
+  return(votes)
+}
+
+#' Get action history for a specific bill
+#'
+#' This function retrieves the action history for a specific bill.
+#'
+#' @param bill_id The unique identifier of the bill
+#' @return A tibble containing action history
+#'
+#' @examples
+#' bill_action_history(12345)
+#'
+#' @export
+bill_action_history <- function(bill_id) {
+  actions <- billtrack_req(glue::glue("bills/{bill_id}/action-history")) |>
+    purrr::pluck("actions") |>
+    tibble::as_tibble()
+
+  return(actions)
+}
+
+#' Get events for a specific bill
+#'
+#' This function retrieves all events for a specific bill.
+#'
+#' @param bill_id The unique identifier of the bill
+#' @return A tibble containing event information
+#'
+#' @examples
+#' bill_events(12345)
+#'
+#' @export
+bill_events <- function(bill_id) {
+  events <- billtrack_req(glue::glue("bills/{bill_id}/events")) |>
+    purrr::pluck("events") |>
+    tibble::as_tibble()
+
+  return(events)
+}
+
+#' Get detailed information about a specific vote
+#'
+#' This function retrieves detailed information about a vote by its ID.
+#'
+#' @param vote_id The unique identifier of the vote
+#' @return A tibble containing detailed vote information including legislator votes
+#'
+#' @examples
+#' vote_details(67890)
+#'
+#' @export
+vote_details <- function(vote_id) {
+  vote <- billtrack_req(glue::glue("votes/{vote_id}")) |>
+    purrr::pluck("vote") |>
+    tibble::as_tibble()
+
+  return(vote)
+}
+
 #' Get information about legislators
 #'
 #' This function retrieves information about legislators based on the specified legislator name and state codes.
