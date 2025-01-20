@@ -48,7 +48,8 @@ billtrack_req <- function(
 #' @export
 sessions <- function(state = NULL) {
   sessions <- billtrack_req(glue::glue("sessions/{state}")) |>
-    purrr::pluck("sessions")
+    purrr::pluck("sessions") |>
+    tibble::as_tibble()
 
   return(sessions)
 }
@@ -67,7 +68,9 @@ sessions <- function(state = NULL) {
 #'
 #' @export
 bills <- function(search_text = NULL, state_codes = NULL, session_id = NULL) {
-  bills <- billtrack_req(glue::glue("bills/?searchText={search_text}&stateCodes={state_codes}&sessionID={session_id}"))
+  bills <- billtrack_req(glue::glue("bills/?searchText={search_text}&stateCodes={state_codes}&sessionID={session_id}")) |>
+    purrr::pluck("bills") |>
+    tibble::as_tibble()
 
   return(bills)
 }
@@ -91,3 +94,41 @@ legislators <- function(legislator_name, state_codes) {
 
   return(legislators)
 }
+
+#' Get information about bill sheets
+#'
+#' This function retrieves information about all bill sheets for the authenticated user.
+#'
+#' @return A tibble of bill sheets containing information like billSheetID, name, summary, counts, etc.
+#'
+#' @examples
+#' bill_sheets()
+#'
+#' @export
+bill_sheets <- function() {
+  sheets <- billtrack_req("billSheets") |>
+    purrr::pluck("billSheets") |>
+    tibble::as_tibble()
+
+  return(sheets)
+}
+
+#' Get bills from a specific bill sheet
+#'
+#' This function retrieves all bills contained in a specified bill sheet.
+#'
+#' @param bill_sheet_id The unique identifier of the bill sheet
+#' @return A tibble of bills contained in the specified bill sheet
+#'
+#' @examples
+#' bill_sheet_bills(12345)
+#'
+#' @export
+bill_sheet_bills <- function(bill_sheet_id) {
+  bills <- billtrack_req(glue::glue("billSheets/{bill_sheet_id}/bills")) |>
+    purrr::pluck("bills") |>
+    tibble::as_tibble()
+
+  return(bills)
+}
+
