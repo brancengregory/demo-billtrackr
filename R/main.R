@@ -95,6 +95,63 @@ legislators <- function(legislator_name, state_codes) {
   return(legislators)
 }
 
+#' Get detailed information about a specific legislator
+#'
+#' This function retrieves detailed information about a legislator by their ID.
+#'
+#' @param legislator_id The unique identifier of the legislator
+#' @return A tibble containing detailed legislator information
+#'
+#' @examples
+#' legislator_details(18718)
+#'
+#' @export
+legislator_details <- function(legislator_id) {
+  legislator <- billtrack_req(glue::glue("legislators/{legislator_id}")) |>
+    purrr::pluck("legislator") |>
+    tibble::as_tibble()
+
+  return(legislator)
+}
+
+#' Get bills sponsored by a specific legislator
+#'
+#' This function retrieves all bills sponsored by a specific legislator.
+#'
+#' @param legislator_id The unique identifier of the legislator
+#' @return A tibble containing bills sponsored by the legislator
+#'
+#' @examples
+#' legislator_bills(18718)
+#'
+#' @export
+legislator_bills <- function(legislator_id) {
+  bills <- billtrack_req(glue::glue("legislators/{legislator_id}/bills")) |>
+    purrr::pluck("sponsoredBill") |>
+    tibble::as_tibble()
+
+  return(bills)
+}
+
+#' Get voting history for a specific legislator
+#'
+#' This function retrieves all votes cast by a specific legislator.
+#'
+#' @param legislator_id The unique identifier of the legislator
+#' @return A tibble containing the legislator's voting history
+#'
+#' @examples
+#' legislator_votes(18718)
+#'
+#' @export
+legislator_votes <- function(legislator_id) {
+  votes <- billtrack_req(glue::glue("legislators/{legislator_id}/votes")) |>
+    purrr::pluck("legislatorVotes") |>
+    tibble::as_tibble()
+
+  return(votes)
+}
+
 #' Get information about bill sheets
 #'
 #' This function retrieves information about all bill sheets for the authenticated user.
@@ -222,6 +279,7 @@ scorecard_legislator_votes <- function(scorecard_id, legislator_id) {
 #' scorecard_legislators(12345, category_id = 67)
 #'
 #' @export
+
 scorecard_legislators <- function(scorecard_id, category_id = NULL) {
   path <- if (is.null(category_id)) {
     glue::glue("scorecards/{scorecard_id}/legislators")
